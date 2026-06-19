@@ -36,19 +36,49 @@ typedef struct TreeNode{
 	struct TreeNode *right_sibling;
 } TreeNode, *NTree;
 
-// --- Function Prototypes ---
+// ---- Max-Heap -------
+typedef int (*compareFiles)(LFile, LFile);
+
+typedef struct FileHeap {
+    int nrMax;
+    int nrElem;
+    LFile *v;
+    compareFiles comp;
+} TFileHeap;
+
+// -------- Function Prototypes --------
 
 // file.c
+void Manage_Commands(FILE *fin, FILE *fout, FList *file_list,  NTree root);
+
+// list.c
 FList Init_File_List();
 void Add_Keyword(char *word, LFile file);
-void Add_File(FILE *fin, FILE *fout, FList *f);
-void Manage_Commands(FILE *fin, FILE *fout, LFile file);
+void Add_File(FILE *fin, FILE *fout, FList *f, NTree root);
+void Free_File_List(FList f);
+int Scan_and_Search_if_File_Exists(FILE *fin, FILE *fout, FList *f, LFile *specific_file);
+void Delete_File(FILE *fin, FILE *fout, FList *f, NTree root);
+void AddKw(FILE *fin, FILE *fout, FList *f, NTree root);
+void DelKw(FILE *fin, FILE *fout, FList *f, NTree root);
+int Check_if_Keyword_exists(char *word, LFile file);
+void Delete_Kw_From_File(FList *f, LFile file, char *word);
 
 // tree.c
 NTree Init_Tree();
 void Add_Word_To_Tree(NTree *root, char *word, LFile file);
-void Print(FILE *fout, NTree root, int level);
+void Print(FILE *fout, NTree current, char *buffer, int level);
 int Count_File_Refs(NTree leaf);
+void Free_Tree(NTree current);
+NTree Recursive_Delete_Node(NTree node, char *word, int index, char *file_id);
+void Delete_Word_From_Tree(NTree *current, LFile file, char *word);
+int Tree_Has_Keywords(NTree current);
+void Find_Keyword(FILE *fin, FILE *fout, NTree *current);
 
-
-
+// heap.c
+void Swap_Files(LFile *a, LFile *b);
+int Rel_Max_Heap_Files(LFile a, LFile b);
+TFileHeap* Allocate_File_Heap(int nrMax, compareFiles comp);
+void Free_File_Heap(TFileHeap **h);
+void Insert_File_Heap(TFileHeap* h, LFile file);
+LFile Extract_File_Heap(TFileHeap* h);
+void TopK(FILE *fin, FILE *fout, NTree *current);

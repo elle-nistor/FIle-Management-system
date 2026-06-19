@@ -16,17 +16,21 @@ int main(){
 
     if (fout == NULL){
         printf("Could not create output file");
+        return 2;
     }
 
     // initialize file list
     FList file_list = Init_File_List();
     NTree root = Init_Tree();
 
-    Manage_Commands(fin, fout, file_list->head);
-
+    // manage commands -> execute commands from input file
+    Manage_Commands(fin, fout, &file_list, root);
 
     fclose(fin);
     fclose(fout);
-    
+
+    Free_Tree(root);
+    Free_File_List(file_list);
+
     return 0;
 }
